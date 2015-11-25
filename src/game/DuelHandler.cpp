@@ -23,6 +23,7 @@
 #include "Opcodes.h"
 #include "UpdateData.h"
 #include "Player.h"
+#include "World.h"
 
 void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
 {
@@ -46,6 +47,36 @@ void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
     pl->duel->startTimer = now;
     plTarget->duel->startTimer = now;
 
+    if (sWorld.getConfig(CONFIG_BOOL_DUEL_MOD))
+    {
+		
+		pl->SetHealth(pl->GetMaxHealth());
+        if (pl->GetPowerType() == POWER_MANA)
+            pl->SetPower(POWER_MANA, pl->GetMaxPower(POWER_MANA));
+
+        plTarget->SetHealth(plTarget->GetMaxHealth());
+        if (plTarget->GetPowerType() == POWER_MANA)
+            plTarget->SetPower(POWER_MANA, plTarget->GetMaxPower(POWER_MANA));
+		
+         // set max hp, mana and remove buffs of players' pet if they have
+        if (Pet* pet = pl->GetPet())
+        {
+            pet->SetHealth(pet->GetMaxHealth());
+            pet->SetPower(pet->GetPowerType(), pet->GetMaxPower(pet->GetPowerType()));
+        }
+
+        if (Pet* petTarget = plTarget->GetPet())
+        {
+            petTarget->SetHealth(petTarget->GetMaxHealth());
+            petTarget->SetPower(petTarget->GetPowerType(), petTarget->GetMaxPower(petTarget->GetPowerType()));
+        }
+
+        if (sWorld.getConfig(CONFIG_BOOL_DUEL_CD_RESET) && !pl->GetMap()->IsDungeon())
+            pl->RemoveArenaSpellCooldowns();
+
+        if (sWorld.getConfig(CONFIG_BOOL_DUEL_CD_RESET) && !plTarget->GetMap()->IsDungeon())
+            plTarget->RemoveArenaSpellCooldowns();
+    }
     pl->SendDuelCountdown(3000);
     plTarget->SendDuelCountdown(3000);
 }

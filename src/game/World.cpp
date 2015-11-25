@@ -686,6 +686,8 @@ void World::LoadConfigSettings(bool reload)
     setConfig(CONFIG_BOOL_OUTDOORPVP_ZM_ENABLED,                       "OutdoorPvp.ZMEnabled", true);
     setConfig(CONFIG_BOOL_OUTDOORPVP_TF_ENABLED,                       "OutdoorPvp.TFEnabled", true);
     setConfig(CONFIG_BOOL_OUTDOORPVP_NA_ENABLED,                       "OutdoorPvp.NAEnabled", true);
+	setConfig(CONFIG_BOOL_DUEL_MOD,                                    "DuelMod.Enable", true);
+    setConfig(CONFIG_BOOL_DUEL_CD_RESET,                               "DuelMod.Cooldowns", true);
 
     setConfig(CONFIG_BOOL_OFFHAND_CHECK_AT_TALENTS_RESET, "OffhandCheckAtTalentsReset", false);
 
